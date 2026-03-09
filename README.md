@@ -1,6 +1,6 @@
 # email-to-r2
 
-A Cloudflare Email Worker that receives incoming emails, parses them, stores attachments to R2, and publishes a summary message to a Cloudflare Queue for downstream processing.
+Cloudflare Email Worker that parses incoming emails, uploads them to an R2 bucket with attachments stored as individual files, and publishes an event to a Cloudflare Queue for downstream consumers.
 
 ## What it does
 
