@@ -1,0 +1,68 @@
+name = "email-to-r2"
+main = "src/index.ts"
+compatibility_date = "2026-03-06"
+compatibility_flags = ["nodejs_compat"]
+
+# ─────────────────────────────────────────────────────────────────────────────
+# R2 Bucket
+# Create with: wrangler r2 bucket create YOUR_BUCKET_NAME
+# ─────────────────────────────────────────────────────────────────────────────
+[[r2_buckets]]
+binding     = "EMAIL_BUCKET"
+bucket_name = "YOUR_BUCKET_NAME"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Cloudflare Queue (producer)
+# Create with: wrangler queues create YOUR_QUEUE_NAME
+# ─────────────────────────────────────────────────────────────────────────────
+[[queues.producers]]
+binding = "EMAIL_QUEUE"
+queue   = "YOUR_QUEUE_NAME"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Configuration variables
+# These can be overridden per-environment below
+# ─────────────────────────────────────────────────────────────────────────────
+[vars]
+# Must match the bucket_name in [[r2_buckets]] — used to construct r2:// URIs in queue messages
+R2_BUCKET_NAME = "YOUR_BUCKET_NAME"
+
+# Root "folder" inside the R2 bucket (no leading or trailing slash)
+R2_PATH_PREFIX = "emails"
+
+# Maximum size (in MB) of a single attachment to store in R2.
+# Attachments exceeding this are recorded in metadata with oversized=true
+# but are not uploaded. Set to "0" to disable the limit.
+MAX_ATTACHMENT_SIZE_MB = "25"
+
+# Set to "false" to exclude the text/HTML body from the metadata JSON.
+# Useful for reducing storage on high-volume pipelines.
+STORE_TEXT_BODY = "true"
+STORE_HTML_BODY = "true"
+
+# Optional: forward every incoming email to this address after processing.
+# Remove or leave empty to disable forwarding.
+# FORWARD_DESTINATION = "you@example.com"
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Staging environment (optional)
+# Deploy with: wrangler deploy --env staging
+# ─────────────────────────────────────────────────────────────────────────────
+[env.staging]
+name = "email-to-r2-staging"
+
+[[env.staging.r2_buckets]]
+binding     = "EMAIL_BUCKET"
+bucket_name = "YOUR_BUCKET_NAME_STAGING"
+
+[[env.staging.queues.producers]]
+binding = "EMAIL_QUEUE"
+queue   = "YOUR_QUEUE_NAME_STAGING"
+
+[env.staging.vars]
+R2_BUCKET_NAME         = "YOUR_BUCKET_NAME_STAGING"
+R2_PATH_PREFIX         = "emails"
+MAX_ATTACHMENT_SIZE_MB = "25"
+STORE_TEXT_BODY        = "true"
+STORE_HTML_BODY        = "true"
+# FORWARD_DESTINATION  = "you@example.com"

@@ -1,0 +1,19 @@
+node_modules/
+dist/
+.wrangler/
+
+# Real wrangler config (contains your bucket/queue names)
+# Copy wrangler.example.toml → wrangler.toml and fill in your values
+wrangler.toml
+
+# Local dev secrets
+.dev.vars
+
+# Editor / OS
+.DS_Store
+.vscode/
+.idea/
+*.swp
+
+# Agents
+.claude
